@@ -4,7 +4,13 @@ Use the milestone boundaries in `README.md` for scope. This checkout implements 
 
 Run locally. Do not provision cloud services, add hosted previews, publish the repository, or deploy without the maintainer's explicit authorization. The code license remains undecided. Use synthetic fixtures and keep secrets out of Git.
 
-Validate with `npm run check`, `npm run test:db`, `npm run build`, and `npm run test:e2e`. Commit generated SQL migrations and their metadata. Use ready-for-review PRs if publication is later authorized, unless explicitly asked for a draft.
+Use Node 24 (`.nvmrc`; minimum supported 22.18 or 24.11) and the pinned lockfile. Run `npm run verify:fast` during changes and `npm run verify:full` before declaring completion. Run `npm run test:mutation` separately after changing validation, authentication, ownership or preference logic/tests. Full acceptance requires local Compose PostgreSQL, `.env` with guarded synthetic settings, database creation privileges and Playwright Chromium. It uses disposable databases, an isolated production build and a free loopback port; never reuse or reset the main development database or another running preview.
+
+Enforce formatting, zero lint warnings, strict types, complexity ≤15, depth ≤4 and ≤4 parameters. Fresh application coverage requires per-file statements/branches/lines ≥90% and functions 100%; CRAP ≤15. Mutation testing requires raw score ≥90% and no unreviewed meaningful survivors. Read `docs/coverage-and-crap.md` and `docs/mutation-testing.md` for measurement boundaries, mapping limits, exact equivalent reviews and runner caveats. New unclassified authored sources fail rather than disappearing from coverage.
+
+Agents must investigate and fix failures, rerun relevant checks with fresh evidence, and run full acceptance before declaring completion. Never weaken gates, disable rules/mutators, suppress/exclude our behavior, remove assertions, or change acceptance expectations merely to pass. Unsupported cases and unresolved failures must remain explicit. Any future justified gate/contract change requires separate maintainer review. Prefer tests of observable behavior over implementation mirrors. Keep sources/tests stable during coverage or mutation runs.
+
+Make small cohesive verified local Git commits. Before every commit inspect the complete staged diff, run `git diff --cached --check`, and ensure it includes no secrets, environment values, local database contents, generated quality reports or unrelated changes. Commit generated SQL migrations and their metadata. Use ready-for-review PRs if publication is later authorized, unless explicitly asked for a draft.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

@@ -10,13 +10,21 @@ Before submitting a change:
 
 ```sh
 npm run format
-npm run check
-npm run build
-# For UI, authentication, or authorization changes:
-npm run test:e2e
+npm run verify:fast
+npm run verify:full
+# For validation, authentication, ownership or preference changes:
+npm run test:mutation
 ```
 
-Use TypeScript strict mode and the repository’s formatting/lint configuration. Add tests that prove externally meaningful behavior; avoid tests that only repeat implementation details. Use ready-for-review pull requests when repository publication is eventually authorized, unless explicitly asked for a draft.
+The full check needs local PostgreSQL, a configured `.env`, guarded synthetic seed settings, database creation privileges, and Playwright Chromium (`npx playwright install chromium`). It creates disposable databases and a temporary production-build workspace; do not point tests at personal or remote data. Leave development previews running: acceptance uses its own free loopback port. Never run the internal `test:browser` runner against your development accounts. Use Node 24 through `.nvmrc` (22.18+ or 24.11+ supported) and `npm ci` for the pinned toolchain.
+
+Use strict TypeScript, Prettier, zero ESLint warnings, complexity ≤15, nesting ≤4 and ≤4 parameters for application code. Per-file application coverage gates are 90% statements/branches/lines and 100% functions; CRAP ≤15. Run `npm run coverage`, `npm run crap:advisory`, or `npm run crap` for fresh evidence. Stryker's raw mutation score gate is 90%, plus no unreviewed meaningful survivors. Exact coverage boundaries, calculation/mapping checks, mutation limitations and reviewed equivalents are documented in [coverage/CRAP](docs/coverage-and-crap.md) and [mutation testing](docs/mutation-testing.md).
+
+Test observable outcomes: accepted/rejected inputs, verified identities, stored preferences, UI language, protected access, and unchanged English references. Mock external boundaries for focused unit checks; use real Better Auth and PostgreSQL for browser acceptance. A test passing against a mock does not replace integration evidence. Coverage measures execution, not correctness.
+
+When a check fails, identify the behavioral or infrastructure cause, repair it, and rerun the relevant check. Recollect coverage/CRAP after source or test changes; rerun mutation testing after changing its targets or assertions. Keep inputs stable during report generation. Do not change expected behavior, lower thresholds, disable rules/mutators, suppress coverage, or exclude authored behavior merely to make a gate pass. Equivalent mutations require an exact, reasoned review; unsupported cases remain explicit limitations. Any justified future contract or gate change needs separate maintainer review and evidence.
+
+Make small, coherent local commits after relevant checks pass. Before every commit, inspect the complete staged diff and run `git diff --cached --check`; ensure no secrets, `.env`, personal/local database contents, generated reports or unrelated changes are included. Commit source/configuration/fixtures and migration metadata, not generated quality results. Report any unresolved failure honestly and never declare completion until relevant checks and full acceptance pass. Use ready-for-review pull requests only when repository publication is eventually authorized, unless explicitly asked for a draft.
 
 ## Schema and auth
 

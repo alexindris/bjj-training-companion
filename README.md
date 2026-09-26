@@ -8,7 +8,7 @@ The repository is local and unpublished. Application code licensing is **pending
 
 ## Run locally
 
-Prerequisites: Node.js 22, npm 10 or later, Docker Desktop (running) or Docker Engine with Compose. No hosting, identity-provider, cloud, or email-service account is required.
+Prerequisites: Node.js 24 (use `.nvmrc`; supported alternatives are Node 22.18+ or 24.11+), npm 10 or later, Docker Desktop (running) or Docker Engine with Compose. No hosting, identity-provider, cloud, or email-service account is required.
 
 ```sh
 npm ci
@@ -46,7 +46,7 @@ English and Spanish routes use `/en` and `/es`. Language switching saves the sig
 
 The database publishes only to `127.0.0.1`; the app’s documented commands also bind to loopback. PostgreSQL uses a named volume, so stopping containers retains data. `npm run db:down` stops and removes containers while keeping that volume. Compose health checks ensure PostgreSQL is ready before migrations.
 
-If port 5432 is occupied, change `POSTGRES_PORT` and `DATABASE_URL` in `.env`, then restart Compose. If changing the application port, change `BETTER_AUTH_URL` and run `npm run dev -- --port 3001`; also adjust Playwright’s configuration before running browser tests. If existing-volume credentials differ from `.env`, restore matching credentials rather than assuming changed environment variables update the database.
+If port 5432 is occupied, change `POSTGRES_PORT` and `DATABASE_URL` in `.env`, then restart Compose. If changing the application port, change `BETTER_AUTH_URL` and run `npm run dev -- --port 3001`. Acceptance checks allocate their own loopback port. If existing-volume credentials differ from `.env`, restore matching credentials rather than assuming changed environment variables update the database.
 
 ## Database changes
 
@@ -62,23 +62,36 @@ Use migrations, not schema push. The initial schema contains Better Auth identit
 
 `db:seed` refuses production environments and non-loopback database hosts. Never migrate or seed an unfamiliar database. No test training observations or real personal records are bundled. `db:studio` is optional and binds to loopback.
 
-## Check the foundation
+## Local quality checks
 
-The completed local check results are in [docs/local-verification.md](docs/local-verification.md).
+The completed local results are in [docs/local-verification.md](docs/local-verification.md). The checks stay within milestone 1 and run on your computer.
 
 ```sh
-npm run check
-npm run test:db
-npm run build
+# Once per machine:
 npx playwright install chromium
-npm run test:e2e
+# Fast feedback: formatting, lint, strict types, focused behavioral/audit tests
+npm run verify:fast
+# Full acceptance: fast checks, fresh CRAP/coverage, disposable DB integration,
+# fresh migrations/seed, isolated production build and real browser acceptance
+npm run verify:full
+# Separate reports/checks:
+npm run coverage
+npm run crap:advisory
+npm run crap
+npm run test:mutation
 ```
 
-Browser tests require the migrated, seeded local database and `.env`. Playwright starts the development app on port 3000 if needed. Tests use real auth cookies and PostgreSQL, exercise anonymous/forged sessions, localized validation, both users, independent persisted languages, sign-out, English reference content, and a 390px mobile layout. They temporarily change the two synthetic accounts’ languages and restore defaults afterwards; never run them against personal data. Unit checks cover translation keys/placeholders and seed restrictions.
+`npm run check` aliases the fast workflow. `npm run test:db` runs database integration alone; `npm run test:e2e` runs the isolated production build and browser suite. `test:browser` is an internal runner that refuses a normal development database. Every enforcing command returns a nonzero exit status on failure. Mutation testing is intentionally separate from full acceptance because each mutant runs a fresh focused test process.
 
-`test:db` creates its own disposable database on the guarded local PostgreSQL server, verifies fresh and repeated migrations/seeds, hashed credentials, retained preferences, and database constraints, then drops only that test database. It requires permission to create databases, supplied by the local Compose user. It does not modify your main development database.
+Static rules require Prettier formatting, zero ESLint warnings, strict TypeScript, maximum classic function complexity 15, nesting depth 4, and 4 parameters in application sources. Library declaration checking remains skipped for Next.js compatibility; our own source and test types are checked. ESLint 9 remains pinned for the Next configuration’s plugin peer compatibility; its support limitation and upgrade requirement are documented in the coverage guide. Runtime checks require Node 22.18+ or 24.11+ because the maintained quality tools depend on newer runtime features; `.nvmrc` selects Node 24 and installation rejects unsupported engines.
 
-To exercise the same browser suite against the local production server, run `npm run build` followed by `E2E_PRODUCTION=true npm run test:e2e` with port 3000 free. This includes origin rejection and localized rate-limit checks. The current limiter uses process memory; persistent/distributed rate limiting is a future hosting decision.
+Coverage measures all library logic, server actions, and the local seed guard. Per-file gates require 90% statements/branches/lines and 100% functions. Each CRAP command collects fresh coverage and verifies exact function mapping; the enforced maximum is **15**. Individually classified UI, schema, and framework wiring is verified by browser/integration/build checks instead of being included in that numerical report. New unclassified application files, missing coverage, stale evidence, and unsupported mappings fail. See [coverage and CRAP](docs/coverage-and-crap.md) for the calculation, inventory and limitations.
+
+Mutation testing targets validation, authentication orchestration, session ownership, and locale preferences using StrykerJS plus the TypeScript checker. The raw score gate is 90%, with a stricter audit that rejects every unreviewed meaningful survivor and uncovered mutant. Reviewed equivalent cases must match exact current code. See [mutation testing](docs/mutation-testing.md) for the runner workaround, targeted checks and survivor investigation.
+
+The integration checks need the guarded local PostgreSQL server running, `.env`, synthetic seed settings, and permission to create databases (provided by Compose). They create and drop only randomized disposable databases. Browser acceptance also makes a temporary copy of the current working tree and installed dependencies, builds there, and serves on a free loopback port. It exercises real Better Auth sessions and revocation, invalid credentials, protected/forged access, independent account language persistence, forged preference payloads, both UI languages, English reference content, origin checks, rate limits, and mobile layout. It leaves the development database and any preview on port 3000 untouched. Normal completion and failures clean up the temporary workspace/database; a machine crash or forced termination may require removing the specifically named leftover test resources after verifying ownership.
+
+Keep sources stable during report runs. Generated coverage, mutation reports, browser screenshots and traces are ignored by Git. Repair a failing behavior or test, rerun the relevant check, then run full acceptance before declaring completion. Never change acceptance expectations, weaken gates, disable rules, or add exclusions merely to obtain a passing result. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 For a local production smoke check, stop the development server, then:
 
@@ -110,7 +123,7 @@ The browser does not receive database credentials. Protected pages verify real s
 
 The four English starter positions are original minimal fixtures with stable IDs and provenance. They are not a curriculum or a imported BJJGraph dataset. Techniques, video links, and external corpus imports are deferred to milestone 3. No videos or thumbnails are downloaded or rehosted. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Dependencies and the lockfile are pinned. The narrow esbuild override removes a vulnerable obsolete transitive version used by Drizzle Kit’s TypeScript loader; migration generation and application must be checked when changing it. Integrations follow the official [Better Auth Next.js guide](https://better-auth.com/docs/integrations/next), [Drizzle adapter guide](https://better-auth.com/docs/adapters/drizzle), and [next-intl routing guide](https://next-intl.dev/docs/routing/setup).
+Dependencies and the lockfile are pinned. The narrow `typed-rest-client`/`qs` override selects patched qs 6.16.0 for mutation tooling; review it when upgrading Stryker. The narrow esbuild override removes a vulnerable obsolete transitive version used by Drizzle Kit’s TypeScript loader; migration generation and application must be checked when changing it. Integrations follow the official [Better Auth Next.js guide](https://better-auth.com/docs/integrations/next), [Drizzle adapter guide](https://better-auth.com/docs/adapters/drizzle), and [next-intl routing guide](https://next-intl.dev/docs/routing/setup).
 
 ## Next milestones
 

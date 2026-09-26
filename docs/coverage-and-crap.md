@@ -49,7 +49,7 @@ ignore directives in measured source also fail. These checks complement assertio
 
 ## Complexity and per-function coverage
 
-The tool uses the installed, maintained [ESLint classic complexity rule](https://eslint.org/docs/latest/rules/complexity),
+The tool uses the installed [ESLint classic complexity rule](https://eslint.org/docs/latest/rules/complexity),
 with `@typescript-eslint/parser` for native TypeScript syntax. A small adapter
 captures ESLint's numeric result and source node directly at maximum zero, which
 makes it report every function. It does not duplicate the complexity algorithm or
@@ -60,6 +60,14 @@ independent scores. ESLint's `use-at-your-own-risk` built-in rule export is an
 explicit tool API limitation: the pinned dependency and adapter fixtures must be
 verified when upgrading ESLint. Unsupported implicit class initializers/static
 blocks fail rather than receiving invented coverage.
+
+ESLint 9.39.5 remains pinned because the official Next.js configuration's current
+`eslint-plugin-import`, `eslint-plugin-react` and `eslint-plugin-jsx-a11y` peers do
+not yet accept ESLint 10. ESLint 9 is [end of life](https://eslint.org/version-support/);
+this is an unresolved toolchain limitation, not a claim of current maintenance.
+Upgrade when the upstream peer requirements permit it and rerun the complexity
+and mapping fixtures. Do not force incompatible peers or disable Next rules to
+hide the limitation. The mutation tool itself is maintained StrykerJS 10.
 
 [Vitest's V8 provider](https://vitest.dev/guide/coverage) produces an
 [Istanbul JSON report](https://istanbul.js.org/docs/advanced/alternative-reporters/).
