@@ -64,7 +64,7 @@ Use migrations, not schema push. The initial schema contains Better Auth identit
 
 ## Local quality checks
 
-The completed local results are in [docs/local-verification.md](docs/local-verification.md). The checks stay within milestone 1 and run on your computer.
+The checks stay within milestone 1 and run on your computer. Coverage and mutation measurement details are documented below.
 
 ```sh
 # Once per machine:

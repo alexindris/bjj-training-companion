@@ -15,3 +15,8 @@ next-env.d.ts
 *.log
 *.dump
 *.sql.gz
+
+# Private planning context is kept locally and must never be published.
+docs/engineering.md
+docs/CONTEXT.md
+docs/local-verification.md

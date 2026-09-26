@@ -10,7 +10,7 @@ Enforce formatting, zero lint warnings, strict types, complexity â‰¤15, depth â‰
 
 Agents must investigate and fix failures, rerun relevant checks with fresh evidence, and run full acceptance before declaring completion. Never weaken gates, disable rules/mutators, suppress/exclude our behavior, remove assertions, or change acceptance expectations merely to pass. Unsupported cases and unresolved failures must remain explicit. Any future justified gate/contract change requires separate maintainer review. Prefer tests of observable behavior over implementation mirrors. Keep sources/tests stable during coverage or mutation runs.
 
-Make small cohesive verified local Git commits. Before every commit inspect the complete staged diff, run `git diff --cached --check`, and ensure it includes no secrets, environment values, local database contents, generated quality reports or unrelated changes. Commit generated SQL migrations and their metadata. Use ready-for-review PRs if publication is later authorized, unless explicitly asked for a draft.
+Make small cohesive verified local Git commits. Before every commit inspect the complete staged diff, run `git diff --cached --check`, and ensure it includes no secrets, environment values, local database contents, generated quality reports or unrelated changes. Commit generated SQL migrations and their metadata. Use ready-for-review PRs when a pull request is requested, unless explicitly asked for a draft.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
