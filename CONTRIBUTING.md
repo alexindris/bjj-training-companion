@@ -1,6 +1,6 @@
 # Contributing
 
-This project is being developed locally toward an open-source release. The code license has not been chosen; publication and external distribution need the maintainer’s approval. Do not add deployment integrations or hosted previews as part of the foundation.
+This project is hosted privately on GitHub and developed locally toward an open-source release. The code license has not been chosen; public release and external distribution need the maintainer’s approval. Do not add deployment integrations or hosted previews as part of the foundation.
 
 ## Development workflow
 
@@ -24,7 +24,7 @@ Test observable outcomes: accepted/rejected inputs, verified identities, stored 
 
 When a check fails, identify the behavioral or infrastructure cause, repair it, and rerun the relevant check. Recollect coverage/CRAP after source or test changes; rerun mutation testing after changing its targets or assertions. Keep inputs stable during report generation. Do not change expected behavior, lower thresholds, disable rules/mutators, suppress coverage, or exclude authored behavior merely to make a gate pass. Equivalent mutations require an exact, reasoned review; unsupported cases remain explicit limitations. Any justified future contract or gate change needs separate maintainer review and evidence.
 
-Make small, coherent local commits after relevant checks pass. Before every commit, inspect the complete staged diff and run `git diff --cached --check`; ensure no secrets, `.env`, personal/local database contents, generated reports or unrelated changes are included. Commit source/configuration/fixtures and migration metadata, not generated quality results. Report any unresolved failure honestly and never declare completion until relevant checks and full acceptance pass. Use ready-for-review pull requests only when repository publication is eventually authorized, unless explicitly asked for a draft.
+Make small, coherent local commits after relevant checks pass. Before every commit, inspect the complete staged diff and run `git diff --cached --check`; ensure no secrets, `.env`, personal/local database contents, generated reports or unrelated changes are included. Commit source/configuration/fixtures and migration metadata, not generated quality results. Report any unresolved failure honestly and never declare completion until relevant checks and full acceptance pass. Use ready-for-review pull requests when a pull request is requested, unless explicitly asked for a draft.
 
 ## Schema and auth
 

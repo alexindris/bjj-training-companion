@@ -4,7 +4,7 @@ A mobile-first training companion for keeping a focus, reflecting after class, a
 
 **Milestone 1 is the foundation:** Next.js App Router and TypeScript, PostgreSQL in Docker Compose, committed Drizzle migrations, real Better Auth email/password sessions, two synthetic development users, and English/Spanish interface localization. Training goals, logs, draft recovery, and weekly reviews are not implemented yet.
 
-The repository is local and unpublished. Application code licensing is **pending the maintainer’s choice**; `UNLICENSED` is intentional until then. Do not describe this checkout as licensed open-source software or publish it before that decision. See [LICENSE.md](LICENSE.md).
+The repository is hosted privately on GitHub. Application code licensing is **pending the maintainer’s choice**; `UNLICENSED` is intentional until then. Do not describe this checkout as licensed open-source software or make it public before that decision. See [LICENSE.md](LICENSE.md).
 
 ## Run locally
 
