@@ -10,5 +10,16 @@ export default defineConfig([
     "next-env.d.ts",
     "playwright-report/**",
     "test-results/**",
+    "coverage/**",
+    "reports/**",
+    ".stryker-tmp/**",
   ]),
+  {
+    files: ["src/**/*.{ts,tsx}", "scripts/seed-guard.ts"],
+    rules: {
+      complexity: ["error", { max: 15, variant: "classic" }],
+      "max-depth": ["error", 4],
+      "max-params": ["error", 4],
+    },
+  },
 ]);

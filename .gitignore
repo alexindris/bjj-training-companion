@@ -3,6 +3,8 @@ node_modules/
 out/
 dist/
 coverage/
+reports/
+.stryker-tmp/
 playwright-report/
 test-results/
 .env*
