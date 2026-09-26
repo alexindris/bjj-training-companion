@@ -1,0 +1,72 @@
+{
+  "App": {
+    "name": "BJJ Training Companion",
+    "tagline": "Un poco de enfoque. Una mejor práctica.",
+    "skip": "Saltar al contenido",
+    "today": "Hoy",
+    "library": "Biblioteca de referencia",
+    "language": "Idioma de la interfaz",
+    "signOut": "Cerrar sesión",
+    "pending": "Espera un momento…",
+    "saveFailed": "No pudimos guardar el idioma. Inténtalo de nuevo.",
+    "foundation": "Vista previa de la base",
+    "footer": "Para la práctica de cada día."
+  },
+  "Auth": {
+    "eyebrow": "TU TIEMPO EN EL TATAMI",
+    "headline": "Mantén el enfoque.\nEncuentra tu ritmo.",
+    "intro": "Un espacio tranquilo para entrenar con intención, reflexionar después de clase y descubrir los pequeños avances.",
+    "point1": "Un objetivo para llevar a clase",
+    "point2": "Un momento para reflexionar después",
+    "point3": "Tu práctica, a tu ritmo",
+    "title": "Te damos la bienvenida",
+    "subtitle": "Entra en tu compañero de entrenamiento.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "submitting": "Iniciando sesión…",
+    "invalidInput": "Introduce un correo válido y una contraseña de al menos 12 caracteres.",
+    "invalidCredentials": "El correo o la contraseña no coinciden. Inténtalo de nuevo.",
+    "unavailable": "No se puede iniciar sesión en este momento. Inténtalo de nuevo.",
+    "rateLimited": "Demasiados intentos. Espera un momento antes de volver a intentarlo.",
+    "devTitle": "Cuentas de desarrollo local",
+    "devNote": "Usa la contraseña de desarrollo que configuraste en .env. Son cuentas ficticias con preferencias independientes.",
+    "privacy": "Tu cuenta y tus preferencias son privadas. El contenido de referencia es compartido."
+  },
+  "Today": {
+    "eyebrow": "TU PRÁCTICA",
+    "title": "Un pequeño avance en cada clase.",
+    "welcome": "Qué bueno verte, {name}.",
+    "description": "Empieza poco a poco. Mantén la curiosidad. Construye tu propia práctica.",
+    "focusLabel": "TU ENFOQUE DE ENTRENAMIENTO",
+    "focusTitle": "Cada camino empieza con un objetivo.",
+    "focusDescription": "Aquí verás tu primer objetivo y tu reflexión después de clase. La base está lista; el registro de entrenamiento es el siguiente hito.",
+    "nextMilestone": "Próximamente · Objetivos y registro de sesiones",
+    "accountTitle": "Tu espacio está listo",
+    "accountDescription": "Has entrado con tu propia cuenta. El idioma de la interfaz se guarda solo para ti.",
+    "languageLabel": "Interfaz",
+    "referenceLabel": "Contenido de referencia",
+    "referenceValue": "Inglés",
+    "modeLabel": "Entrenamiento predeterminado",
+    "locale-en": "Inglés",
+    "locale-es": "Español",
+    "mode-gi": "Gi",
+    "mode-no-gi": "No-gi",
+    "libraryTitle": "Familiarízate con las posiciones",
+    "libraryDescription": "Una pequeña vista previa en inglés, compartida entre cuentas.",
+    "browse": "Explorar la biblioteca de referencia",
+    "preview": "VISTA PREVIA DE REFERENCIA"
+  },
+  "Library": {
+    "eyebrow": "BIBLIOTECA DE REFERENCIA",
+    "title": "Conoce tu posición.",
+    "description": "Algunas posiciones iniciales para tu práctica con gi. Los títulos y las descripciones permanecen en inglés en ambos idiomas de la interfaz.",
+    "original": "Contenido inicial original",
+    "scope": "Esta es una muestra de la base. Las técnicas, la búsqueda y los vídeos seleccionados están previstos para el hito 3."
+  },
+  "Error": {
+    "title": "Algo ha interrumpido tu práctica.",
+    "description": "Inténtalo de nuevo. Si el problema continúa, comprueba que la base de datos local esté en marcha.",
+    "retry": "Intentar de nuevo"
+  }
+}

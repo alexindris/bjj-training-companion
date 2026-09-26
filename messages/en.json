@@ -1,0 +1,72 @@
+{
+  "App": {
+    "name": "BJJ Training Companion",
+    "tagline": "A little focus. A better practice.",
+    "skip": "Skip to content",
+    "today": "Today",
+    "library": "Reference library",
+    "language": "Interface language",
+    "signOut": "Sign out",
+    "pending": "Please wait…",
+    "saveFailed": "We couldn’t save your language. Please try again.",
+    "foundation": "Foundation preview",
+    "footer": "Built for the everyday practice."
+  },
+  "Auth": {
+    "eyebrow": "YOUR TIME ON THE MAT",
+    "headline": "Keep your focus.\nFind your flow.",
+    "intro": "A quiet place to bring intention to your training, reflect after class, and notice the small steps forward.",
+    "point1": "One focus to take into class",
+    "point2": "A moment to reflect afterwards",
+    "point3": "Your practice, at your pace",
+    "title": "Welcome back",
+    "subtitle": "Sign in to your training companion.",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "invalidInput": "Enter a valid email and a password of at least 12 characters.",
+    "invalidCredentials": "That email or password doesn’t match. Please try again.",
+    "unavailable": "Sign-in is temporarily unavailable. Please try again.",
+    "rateLimited": "Too many attempts. Wait a moment before trying again.",
+    "devTitle": "Local development accounts",
+    "devNote": "Use the development password you set in .env. These are synthetic accounts with separate preferences.",
+    "privacy": "Your account and preferences are private. Reference content is shared."
+  },
+  "Today": {
+    "eyebrow": "YOUR PRACTICE",
+    "title": "A little progress, every class.",
+    "welcome": "Good to see you, {name}.",
+    "description": "Start small. Stay curious. Build a practice that feels like your own.",
+    "focusLabel": "YOUR TRAINING FOCUS",
+    "focusTitle": "Every journey starts with a focus.",
+    "focusDescription": "Your first goal and post-class reflection will live here. The foundation is ready; the training loop is the next milestone.",
+    "nextMilestone": "Coming next · Goals & session logging",
+    "accountTitle": "Your space is ready",
+    "accountDescription": "You’re signed in with your own account. Your interface language is saved just for you.",
+    "languageLabel": "Interface",
+    "referenceLabel": "Reference content",
+    "referenceValue": "English",
+    "modeLabel": "Training default",
+    "locale-en": "English",
+    "locale-es": "Spanish",
+    "mode-gi": "Gi",
+    "mode-no-gi": "No-gi",
+    "libraryTitle": "Get familiar with the positions",
+    "libraryDescription": "A small English reference preview, shared across accounts.",
+    "browse": "Explore the reference library",
+    "preview": "REFERENCE PREVIEW"
+  },
+  "Library": {
+    "eyebrow": "REFERENCE LIBRARY",
+    "title": "Know where you are.",
+    "description": "A few starting positions for your gi practice. Titles and descriptions stay in English in both interface languages.",
+    "original": "Original starter content",
+    "scope": "This is a foundation fixture. Techniques, search, and curated video links are planned for milestone 3."
+  },
+  "Error": {
+    "title": "Something interrupted your practice.",
+    "description": "Please try again. If this continues, check that the local database is running.",
+    "retry": "Try again"
+  }
+}
