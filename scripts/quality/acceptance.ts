@@ -1,26 +1,26 @@
-import "dotenv/config";
-import { randomBytes } from "node:crypto";
 import { cp, mkdtemp, rm, mkdir, realpath } from "node:fs/promises";
 import { constants, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative, resolve } from "node:path";
 import { createServer } from "node:net";
 import { spawnSync } from "node:child_process";
-import { Pool } from "pg";
 import { assertLocalSeed } from "../seed-guard";
+import {
+  startTestPostgres,
+  testEnvironment,
+} from "../../tests/support/postgres";
 
-assertLocalSeed(process.env);
 const root = resolve(import.meta.dirname, "../..");
-const databaseName = `bjj_acceptance_${randomBytes(8).toString("hex")}`;
-const databaseURL = new URL(process.env.DATABASE_URL!);
-databaseURL.pathname = `/${databaseName}`;
-const admin = new Pool({ connectionString: process.env.DATABASE_URL });
+await using postgres = await startTestPostgres("bjj_acceptance_test");
+const testEnv = testEnvironment(postgres);
+assertLocalSeed(testEnv);
 const workspace = await realpath(
   await mkdtemp(join(tmpdir(), "bjj-acceptance-")),
 );
-let created = false;
 const diagnostics = join(root, "reports", "acceptance");
-console.log(`Disposable acceptance resources: ${databaseName}, ${workspace}`);
+console.log(
+  `Disposable acceptance container: ${postgres.getId().slice(0, 12)}; workspace: ${workspace}`,
+);
 
 function run(script: string, environment: NodeJS.ProcessEnv) {
   const result = spawnSync("npm", ["run", script], {
@@ -81,18 +81,15 @@ try {
   const port = await freePort();
   const origin = `http://localhost:${port}`;
   const environment: NodeJS.ProcessEnv = {
-    ...process.env,
-    DATABASE_URL: databaseURL.toString(),
+    ...testEnv,
     BETTER_AUTH_URL: origin,
     PLAYWRIGHT_BASE_URL: origin,
-    BJJ_ACCEPTANCE_DATABASE: databaseName,
+    BJJ_ACCEPTANCE_DATABASE: postgres.getDatabase(),
     E2E_PRODUCTION: "true",
     PORT: String(port),
     NEXT_TELEMETRY_DISABLED: "1",
     NODE_ENV: "development",
   };
-  await admin.query(`CREATE DATABASE "${databaseName}"`);
-  created = true;
   run("db:migrate", environment);
   run("db:seed", environment);
   run("build", { ...environment, NODE_ENV: "production" });
@@ -111,15 +108,6 @@ try {
       );
     }
   } finally {
-    try {
-      if (created)
-        await admin.query(`DROP DATABASE "${databaseName}" WITH (FORCE)`);
-    } finally {
-      try {
-        await admin.end();
-      } finally {
-        await rm(workspace, { recursive: true, force: true });
-      }
-    }
+    await rm(workspace, { recursive: true, force: true });
   }
 }

@@ -1,28 +1,19 @@
-import "dotenv/config";
-import { randomBytes } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
 import { Pool } from "pg";
 import { assertLocalSeed } from "./seed-guard";
+import { startTestPostgres, testEnvironment } from "../tests/support/postgres";
 
-// Creates and drops only its own disposable database on the guarded local server.
-const password = assertLocalSeed(process.env);
-const admin = new Pool({ connectionString: process.env.DATABASE_URL });
-const name = `bjj_verify_${randomBytes(6).toString("hex")}`;
-const url = new URL(process.env.DATABASE_URL!);
-url.pathname = `/${name}`;
-const childEnv = { ...process.env, DATABASE_URL: url.toString() };
-let created = false;
-let temporary: Pool | undefined;
+await using postgres = await startTestPostgres("bjj_integration_test");
+const childEnv = testEnvironment(postgres);
+const password = assertLocalSeed(childEnv);
+const temporary = new Pool({ connectionString: childEnv.DATABASE_URL });
 try {
-  await admin.query(`CREATE DATABASE "${name}"`);
-  created = true;
   const run = (script: string) =>
     execFileSync("npm", ["run", script], { env: childEnv, stdio: "pipe" });
   run("db:migrate");
   run("db:migrate");
   run("db:seed");
-  temporary = new Pool({ connectionString: url.toString() });
   await temporary.query(
     "UPDATE profiles SET locale = 'es' FROM users u WHERE profiles.user_id=u.id AND u.email='sam@example.test'",
   );
@@ -54,7 +45,5 @@ try {
     "PASS: fresh migrations, migration rerun, seed rerun, hashed credentials, preserved preferences, and database locale constraint.",
   );
 } finally {
-  await temporary?.end();
-  if (created) await admin.query(`DROP DATABASE "${name}"`);
-  await admin.end();
+  await temporary.end();
 }

@@ -55,6 +55,7 @@
     "@stryker-mutator/core": "10.0.0",
     "@stryker-mutator/typescript-checker": "10.0.0",
     "@tailwindcss/postcss": "4.3.3",
+    "@testcontainers/postgresql": "12.1.0",
     "@types/node": "22.20.4",
     "@types/pg": "8.23.1",
     "@types/react": "19.3.0",
