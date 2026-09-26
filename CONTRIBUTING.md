@@ -1,6 +1,6 @@
 # Contributing
 
-This project is hosted privately on GitHub and developed locally toward an open-source release. The code license has not been chosen; public release and external distribution need the maintainer’s approval. Do not add deployment integrations or hosted previews as part of the foundation.
+This project’s source is public on GitHub and developed locally toward an open-source release. The code license has not been chosen; public visibility does not grant an open-source license. Do not add deployment integrations or hosted previews as part of the foundation.
 
 ## Development workflow
 
