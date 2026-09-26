@@ -3,6 +3,15 @@ import { Pool } from "pg";
 import { assertLocalSeed } from "../../scripts/seed-guard";
 
 const password = assertLocalSeed(process.env);
+const databaseName = new URL(process.env.DATABASE_URL!).pathname.slice(1);
+if (
+  !databaseName.startsWith("bjj_acceptance_") ||
+  process.env.BJJ_ACCEPTANCE_DATABASE !== databaseName
+) {
+  throw new Error(
+    "Browser checks require the disposable database created by npm run test:e2e.",
+  );
+}
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function login(page: Page, email: string) {
@@ -103,6 +112,11 @@ test("real accounts retain independent languages and the same English references
   );
   await page.getByLabel("Interface language").selectOption("es");
   await expect(page).toHaveURL(/\/es\/library$/);
+  const previousSessionCookie = (await page.context().cookies())
+    .filter((cookie) => cookie.name.startsWith("better-auth."))
+    .map((cookie) => `${cookie.name}=${cookie.value}`)
+    .join("; ");
+  expect(previousSessionCookie).not.toBe("");
   await page
     .getByRole("button", { name: "Cerrar sesión", exact: true })
     .click();
@@ -112,6 +126,10 @@ test("real accounts retain independent languages and the same English references
   expect(
     await page.request.get("/api/auth/get-session").then((r) => r.json()),
   ).toBeNull();
+  const revoked = await page.request.get("/api/auth/get-session", {
+    headers: { cookie: previousSessionCookie },
+  });
+  expect(await revoked.json()).toBeNull();
 
   const second = await browser.newContext();
   const jamie = await second.newPage();
@@ -137,6 +155,14 @@ test("real accounts retain independent languages and the same English references
   await expect(sam).toHaveURL(/\/es$/);
   await expect(sam.getByText("Qué bueno verte, Sam Demo.")).toBeVisible();
   await fresh.close();
+
+  const verification = await pool.query(
+    "select u.email, p.locale from profiles p join users u on u.id=p.user_id where u.email in ('sam@example.test','jamie@example.test') order by u.email",
+  );
+  expect(verification.rows).toEqual([
+    { email: "jamie@example.test", locale: "es" },
+    { email: "sam@example.test", locale: "es" },
+  ]);
 
   await login(page, "jamie@example.test");
   await expect(page).toHaveURL(/\/es$/);
@@ -168,6 +194,46 @@ test("mobile sign-in and dashboard fit the viewport", async ({ page }) => {
     path: "test-results/mobile-dashboard.png",
     fullPage: true,
   });
+});
+
+test("a forged preference payload cannot choose another account", async ({
+  page,
+}) => {
+  await login(page, "sam@example.test");
+  await expect(page).toHaveURL(/\/en$/);
+  const actionRequest = page.waitForRequest(
+    (request) =>
+      request.method() === "POST" && Boolean(request.headers()["next-action"]),
+  );
+  await page.getByLabel("Interface language").selectOption("es");
+  const request = await actionRequest;
+  await expect(page).toHaveURL(/\/es$/);
+  const foreign = await pool.query(
+    "select id from users where email='jamie@example.test'",
+  );
+  const forgedHeaders = {
+    "next-action": request.headers()["next-action"],
+    "content-type": "text/plain;charset=UTF-8",
+    origin: new URL(process.env.PLAYWRIGHT_BASE_URL!).origin,
+  };
+  const malformed = await page.request.post("/es", {
+    headers: forgedHeaders,
+    data: JSON.stringify([{ locale: "en", userId: foreign.rows[0].id }]),
+  });
+  expect(malformed.status()).toBe(200);
+  expect(await malformed.text()).toContain('"success":false');
+  const extraIdentity = await page.request.post("/es", {
+    headers: forgedHeaders,
+    data: JSON.stringify(["en", foreign.rows[0].id]),
+  });
+  expect(extraIdentity.status()).toBe(200);
+  const preferences = await pool.query(
+    "select u.email,p.locale from profiles p join users u on u.id=p.user_id order by u.email",
+  );
+  expect(preferences.rows).toEqual([
+    { email: "jamie@example.test", locale: "es" },
+    { email: "sam@example.test", locale: "en" },
+  ]);
 });
 
 test("auth rejects foreign origins and the sign-in form localizes rate limits", async ({

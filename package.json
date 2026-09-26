@@ -18,10 +18,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "tsx scripts/quality/acceptance.ts",
     "check": "npm run verify:fast",
     "test:db": "tsx scripts/verify-db.ts",
-    "verify:fast": "npm run format:check && npm run lint && npm run typecheck && npm test"
+    "verify:fast": "npm run format:check && npm run lint && npm run typecheck && npm test",
+    "test:browser": "playwright test"
   },
   "keywords": [],
   "author": "",
