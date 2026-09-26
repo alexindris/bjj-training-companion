@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const schema = z.object({
   DATABASE_URL: z
-    .url()
+    .url({ abort: true })
     .refine(
       (url) => ["postgres:", "postgresql:"].includes(new URL(url).protocol),
       "Use a PostgreSQL URL",
