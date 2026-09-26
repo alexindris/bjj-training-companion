@@ -145,6 +145,19 @@ describe("sign-in action", () => {
     expect(boundary.redirect).not.toHaveBeenCalled();
   });
 
+  it.each([403, 500])(
+    "rejects an unsuccessful auth status %i even with a valid-looking identity body",
+    async (status) => {
+      boundary.handler.mockResolvedValue(
+        Response.json({ user: { id: "verified-first" } }, { status }),
+      );
+      expect(await signIn({}, credentials())).toEqual({ error: "unavailable" });
+      expect(boundary.getOwnProfile).not.toHaveBeenCalled();
+      expect(boundary.setCookie).not.toHaveBeenCalled();
+      expect(boundary.redirect).not.toHaveBeenCalled();
+    },
+  );
+
   it("applies every auth cookie and uses the verified user's persisted language", async () => {
     const form = credentials({
       userId: "attacker-controlled-id",

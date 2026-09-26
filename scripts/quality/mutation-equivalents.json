@@ -1,0 +1,70 @@
+[
+  {
+    "file": "scripts/seed-guard.ts",
+    "location": {
+      "end": {
+        "column": 53,
+        "line": 12
+      },
+      "start": {
+        "column": 51,
+        "line": 12
+      }
+    },
+    "mutator": "StringLiteral",
+    "original": "\"\"",
+    "replacement": "\"Stryker was here!\"",
+    "reason": "Both the original empty fallback and this replacement are invalid absolute URLs. When DATABASE_URL is absent, new URL throws before any seed operation. The contract rejects missing URLs without specifying the native URL error wording."
+  },
+  {
+    "file": "src/lib/env.ts",
+    "location": {
+      "end": {
+        "column": 29,
+        "line": 8
+      },
+      "start": {
+        "column": 7,
+        "line": 8
+      }
+    },
+    "mutator": "StringLiteral",
+    "original": "\"Use a PostgreSQL URL\"",
+    "replacement": "\"\"",
+    "reason": "This internal Zod refinement message is not exposed. readEnv converts every failed parse to a sanitized error containing only issue paths, and the exported error contract remains unchanged."
+  },
+  {
+    "file": "src/lib/env.ts",
+    "location": {
+      "end": {
+        "column": 37,
+        "line": 16
+      },
+      "start": {
+        "column": 7,
+        "line": 16
+      }
+    },
+    "mutator": "StringLiteral",
+    "original": "\"Generate a local auth secret\"",
+    "replacement": "\"\"",
+    "reason": "This internal Zod refinement message is not exposed. readEnv converts every failed parse to a sanitized error containing only issue paths, and the exported error contract remains unchanged."
+  },
+  {
+    "file": "src/lib/env.ts",
+    "location": {
+      "end": {
+        "column": 85,
+        "line": 25
+      },
+      "start": {
+        "column": 82,
+        "line": 25
+      }
+    },
+    "mutator": "StringLiteral",
+    "original": "\".\"",
+    "replacement": "\"\"",
+    "reason": "This schema is flat: every failing issue path contains exactly one top-level configuration key. Joining one key with a period or an empty separator produces the same public error. A nested schema would require reviewing this equivalence."
+  }
+]

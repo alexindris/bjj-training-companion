@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": { "incremental": false },
+  "include": [
+    "../../src/app/actions.ts",
+    "../../src/lib/env.ts",
+    "../../src/lib/session.ts",
+    "../../scripts/seed-guard.ts",
+    "../../tests/unit/**/*.test.ts"
+  ],
+  "exclude": ["../../node_modules", "../../.next", "../../reports"]
+}

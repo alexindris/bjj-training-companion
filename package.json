@@ -25,7 +25,9 @@
     "test:browser": "playwright test",
     "coverage": "tsx scripts/quality/coverage.ts",
     "crap:advisory": "tsx scripts/quality/crap.ts --advisory",
-    "crap": "tsx scripts/quality/crap.ts"
+    "crap": "tsx scripts/quality/crap.ts",
+    "test:mutation": "node scripts/quality/mutation.mjs",
+    "verify:full": "npm run verify:fast && npm run crap && npm run test:db && npm run test:e2e"
   },
   "keywords": [],
   "author": "",
@@ -52,7 +54,6 @@
     "@playwright/test": "1.63.0",
     "@stryker-mutator/core": "10.0.0",
     "@stryker-mutator/typescript-checker": "10.0.0",
-    "@stryker-mutator/vitest-runner": "10.0.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.20.4",
     "@types/pg": "8.23.1",
