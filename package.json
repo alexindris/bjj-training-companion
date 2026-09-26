@@ -22,7 +22,10 @@
     "check": "npm run verify:fast",
     "test:db": "tsx scripts/verify-db.ts",
     "verify:fast": "npm run format:check && npm run lint && npm run typecheck && npm test",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "coverage": "tsx scripts/quality/coverage.ts",
+    "crap:advisory": "tsx scripts/quality/crap.ts --advisory",
+    "crap": "tsx scripts/quality/crap.ts"
   },
   "keywords": [],
   "author": "",
