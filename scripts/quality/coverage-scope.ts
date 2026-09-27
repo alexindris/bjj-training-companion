@@ -14,10 +14,30 @@ export const browserVerifiedSources: Record<string, string> = {
   "src/app/[locale]/error.tsx": "Next error boundary presentation",
   "src/app/[locale]/layout.tsx": "Next locale layout and provider wiring",
   "src/app/[locale]/library/page.tsx": "Protected reference library page",
+  "src/app/[locale]/goals/page.tsx":
+    "Verified context and owned goals rendering: browser journeys",
+  "src/app/[locale]/log/page.tsx":
+    "Verified account form wiring: browser draft isolation",
+  "src/app/[locale]/history/page.tsx":
+    "Owned paged history presentation: browser/integration",
+  "src/app/[locale]/history/[id]/page.tsx":
+    "Read-only owned detail presentation and safe not-found: browser",
+  "src/app/[locale]/not-found.tsx":
+    "Localized not-found presentation: foreign/missing browser URLs",
   "src/app/[locale]/page.tsx": "Protected dashboard rendering",
   "src/app/[locale]/sign-in/page.tsx": "Sign-in page/session redirect",
   "src/app/api/auth/[...all]/route.ts": "Better Auth Next handler adapter",
   "src/components/app-shell.tsx": "Navigation and sign-out presentation",
+  "src/components/class-detail.tsx":
+    "Read-only class/observation rendering with null counts: browser",
+  "src/components/class-fields.tsx":
+    "Labelled form controls calling measured draft transitions: browser",
+  "src/components/class-form.tsx":
+    "React lifecycle/storage wiring and save presentation: measured draft policy plus browser receipts/recovery",
+  "src/components/goals-panel.tsx":
+    "Goal/action controls and presentation: measured actions plus browser",
+  "src/components/training-feedback.tsx":
+    "Localized field/action error presentation: browser",
   "src/components/brand.tsx": "Presentational brand",
   "src/components/language-switcher.tsx": "Locale action and navigation UI",
   "src/components/sign-in-form.tsx": "Progressively enhanced sign-in UI",
