@@ -2,7 +2,7 @@
 
 A mobile-first training companion for keeping a focus, reflecting after class, and reviewing progress over time. Built locally toward an open-source release, with ordinary PostgreSQL and authentication inside the application.
 
-**Milestone 1 is the foundation:** Next.js App Router and TypeScript, PostgreSQL in Docker Compose, committed Drizzle migrations, real Better Auth email/password sessions, two synthetic development users, and English/Spanish interface localization. Training goals, logs, draft recovery, and weekly reviews are not implemented yet.
+**Milestones 1 and 2:** Next.js App Router and TypeScript, PostgreSQL in Docker Compose, committed Drizzle migrations, real Better Auth email/password sessions, two synthetic development users, and English/Spanish interface localization. The training loop adds owned goals, zero or one active goal, classes with optional goal observations, local draft recovery and read-only history. Weekly reviews and saved-record changes belong to later milestones.
 
 The source repository is public on GitHub. Application code licensing is **pending the maintainer’s choice**; `UNLICENSED` is intentional until then. Public visibility does not grant an open-source license. See [LICENSE.md](LICENSE.md).
 
@@ -30,7 +30,19 @@ Open [http://localhost:3000](http://localhost:3000). All commands run from the r
 
 Both accounts use your **`DEV_USER_PASSWORD` value in `.env`**. The development sign-in screen lists the emails; it never renders the password. Production builds hide this helper. Seed creation uses Better Auth and stores hashed passwords, not plaintext. Re-running the seed preserves existing passwords and language choices. Changing the environment password does not reset an existing account.
 
-English and Spanish routes use `/en` and `/es`. Language switching saves the signed-in user’s preference in PostgreSQL and a browser cookie. On subsequent sign-in, the saved account language takes precedence over the sign-in page language. Each account has an independent preference. Anonymous switching saves only the cookie. Reference titles and descriptions remain English, with English language attributes; future user-authored text must be stored verbatim.
+English and Spanish routes use `/en` and `/es`. Language switching saves the signed-in user’s preference in PostgreSQL and a browser cookie. On subsequent sign-in, the saved account language takes precedence over the sign-in page language. Each account has an independent preference. Anonymous switching saves only the cookie. Reference titles and descriptions remain English, with English language attributes; user-authored goals, class technique and reflections are stored verbatim.
+
+## Training loop
+
+Create a goal in Goals, then choose it as Today’s focus or clear the focus. New goals start inactive. Log class starts with the device-local date, account gi/no-gi default and active goal. Date and class technique/session focus are required; choosing a goal also requires an outcome. Counts (0–9,999) and reflections are optional. Blank counts mean unknown and entered zero remains zero. Personal text is preserved exactly; interface labels and errors support English and Spanish.
+
+The form keeps one localStorage draft per account on this browser. Refresh or language switching recovers unfinished fields, including partially typed counts and the same submission ID. A recovered goal takes precedence over the current active focus. Sign-out hides the draft; its owner can resume after signing back in. Storage failures leave current input available and show a recovery warning. Drafts are browser-local convenience storage, without encryption or cross-device recovery.
+
+**Supported use is one editing tab per account.** Multiple tabs can overwrite the same draft. This MVP has no locks, cross-tab conflict resolution, background sync or offline application shell.
+
+Save disables editing while the request is pending and stores the class and optional observation in one transaction. Ordinary failures retain fields and submission ID for retry. A confirmed new save clears the draft. A repeated submission ID returns **Already saved** with a link to the original class; edited retry text does not overwrite that record, and the current form stays until explicit discard/new log.
+
+History is owned and read-only, ordered by training date, creation time and ID, with 25 records per page. Missing and foreign record IDs share a not-found result. Saved edits/deletes, weekly review, goal lifecycle tools and export/restore are deferred.
 
 ## Environment and local services
 
@@ -58,13 +70,13 @@ npm run db:migrate
 npm run db:seed
 ```
 
-Use migrations, not schema push. The initial schema contains Better Auth identity tables, owned profiles with constrained locale/training defaults, and a shared reference fixture table. Authentication sessions are named `auth_sessions`; future training sessions should be named `training_sessions`.
+Use migrations, not schema push. The initial schema contains Better Auth identity tables, owned profiles with constrained locale/training defaults, and a shared reference fixture table. Authentication sessions are named `auth_sessions`; class records are named `training_sessions`. The additive training migration creates goals and observations and adds a nullable owned active-goal pointer to profiles. It preserves existing accounts, preferences and reference fixtures. Code rollback must retain recorded training tables and data.
 
 `db:seed` refuses production environments and non-loopback database hosts. Never migrate or seed an unfamiliar database. No test training observations or real personal records are bundled. `db:studio` is optional and binds to loopback.
 
 ## Local quality checks
 
-The checks stay within milestone 1 and run on your computer. Coverage and mutation measurement details are documented below.
+The checks cover the foundation and milestone 2 training loop and run on your computer. Coverage and mutation measurement details are documented below.
 
 ```sh
 # Once per machine:
@@ -85,9 +97,9 @@ npm run test:mutation
 
 Static rules require Prettier formatting, zero ESLint warnings, strict TypeScript, maximum classic function complexity 15, nesting depth 4, and 4 parameters in application sources. Library declaration checking remains skipped for Next.js compatibility; our own source and test types are checked. ESLint 9 remains pinned for the Next configuration’s plugin peer compatibility; its support limitation and upgrade requirement are documented in the coverage guide. Runtime checks require Node 22.18+ or 24.11+ because the maintained quality tools depend on newer runtime features; `.nvmrc` selects Node 24 and installation rejects unsupported engines.
 
-Coverage measures all library logic, server actions, and the local seed guard. Per-file gates require 90% statements/branches/lines and 100% functions. Each CRAP command collects fresh coverage and verifies exact function mapping; the enforced maximum is **15**. Individually classified UI, schema, and framework wiring is verified by browser/integration/build checks instead of being included in that numerical report. New unclassified application files, missing coverage, stale evidence, and unsupported mappings fail. See [coverage and CRAP](docs/coverage-and-crap.md) for the calculation, inventory and limitations.
+Coverage measures all library logic, all server action modules, and the local seed guard. Per-file gates require 90% statements/branches/lines and 100% functions. Each CRAP command collects fresh coverage and verifies exact function mapping; the enforced maximum is **15**. Individually classified UI, schema, and framework wiring is verified by browser/integration/build checks instead of being included in that numerical report. New unclassified application files, missing coverage, stale evidence, and unsupported mappings fail. See [coverage and CRAP](docs/coverage-and-crap.md) for the calculation, inventory and limitations.
 
-Mutation testing targets validation, authentication orchestration, session ownership, and locale preferences using StrykerJS plus the TypeScript checker. The raw score gate is 90%, with a stricter audit that rejects every unreviewed meaningful survivor and uncovered mutant. Reviewed equivalent cases must match exact current code. See [mutation testing](docs/mutation-testing.md) for the runner workaround, targeted checks and survivor investigation.
+Mutation testing targets validation, authentication orchestration, session ownership, locale preferences and training validation/persistence using StrykerJS plus the TypeScript checker. The raw score gate is 90%, with a stricter audit that rejects every unreviewed meaningful survivor and uncovered mutant. Reviewed equivalent cases must match exact current code. See [mutation testing](docs/mutation-testing.md) for the runner workaround, targeted checks and survivor investigation.
 
 Database integration and browser acceptance use [Testcontainers for Node.js](https://node.testcontainers.org/modules/postgresql/) to start their own disposable `postgres:17.9-alpine` containers. They require a running local Docker runtime; they do not require `.env`, the development Compose service, an available port 5432, or database creation privileges on an existing server. Testcontainers waits for PostgreSQL readiness, assigns random mapped database ports, and removes the test containers and their data after each run. The harness generates ephemeral synthetic account passwords and authentication secrets; it never reads development credentials. Browser acceptance also makes a temporary copy of the current working tree and installed dependencies, builds there, and serves on a free loopback port. It exercises real Better Auth sessions and revocation, invalid credentials, protected/forged access, independent account language persistence, forged preference payloads, both UI languages, English reference content, origin checks, rate limits, and mobile layout. It leaves the development database and any preview on port 3000 untouched. Normal completion and failures clean up the temporary workspace and stop the owned containers; Testcontainers’ resource reaper handles interrupted-process cleanup while Docker remains available. After a machine or Docker crash, inspect ownership before removing any leftover test resources. Docker Compose remains the persistent development database workflow.
 
@@ -117,7 +129,7 @@ tests/              Foundation unit and real-browser acceptance checks
 docs/               Engineering context and local verification report
 ```
 
-The browser does not receive database credentials. Protected pages verify real sessions on the server. The locale action derives the account ID from that session; callers cannot submit another account ID. Shared references have no user mutation route. Future training operations must enforce ownership at the operation and relationship level; a page redirect is not sufficient authorization. The pool is bounded locally and reused during development hot reload. Hosted aggregate connection limits must be assessed when hosting is actually chosen.
+The browser does not receive database credentials. Protected pages verify real sessions on the server. The locale action derives the account ID from that session; callers cannot submit another account ID. Shared references have no user mutation route. Training operations enforce ownership at the operation and relationship level; a page redirect is not sufficient authorization. The pool is bounded locally and reused during development hot reload. Hosted aggregate connection limits must be assessed when hosting is actually chosen.
 
 ## Content and dependencies
 
@@ -127,8 +139,8 @@ Dependencies and the lockfile are pinned. The narrow `typed-rest-client`/`qs` ov
 
 ## Next milestones
 
-1. **Foundation (this checkout):** reproducible setup, database, authentication, two users, language switching.
-2. **Training loop:** create/activate goals, log class technique and observations, recover drafts, inspect history.
+1. **Foundation (implemented):** reproducible setup, database, authentication, two users, language switching.
+2. **Training loop (implemented):** create/activate goals, log class technique and observations, recover drafts, inspect history.
 3. **Reference links:** curate the English corpus, search, techniques, video timestamps, and private notes.
 4. **Review and durability:** weekly review, goal history, edits, export, and full cross-user isolation tests.
 5. **Local acceptance:** phone-oriented review, production-build check, export/restore verification.

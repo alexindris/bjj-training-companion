@@ -8,10 +8,13 @@ the command runner, Vitest unit suite, and TypeScript checker. See the official
 and [configuration](https://stryker-mutator.io/docs/stryker-js/configuration/)
 documentation. Use the repository's documented Node version and `npm ci`.
 
-The selected first-milestone logic is:
+The selected foundation and training-loop logic is:
 
 - `src/app/actions.ts`: credential and language validation, response handling,
   authentication cookies, sign-out, and session-owned language updates.
+- `src/app/training-actions.ts`: verified goal/focus/class mutations and safe receipts/errors.
+- `src/lib/training-validation.ts`: training input limits, calendar dates, outcomes and nullable counts.
+- `src/lib/training-store.ts`: owned predicates, active-focus writes and atomic duplicate saves.
 - `src/lib/session.ts`: session retrieval and profile ownership filtering.
 - `src/lib/env.ts`: required PostgreSQL/auth configuration validation and
   value-free error messages.

@@ -1,6 +1,6 @@
 # Contributing
 
-This project’s source is public on GitHub and developed locally toward an open-source release. The code license has not been chosen; public visibility does not grant an open-source license. Do not add deployment integrations or hosted previews as part of the foundation.
+This project’s source is public on GitHub and developed locally toward an open-source release. The code license has not been chosen; public visibility does not grant an open-source license. Do not add deployment integrations or hosted previews as part of these local milestones.
 
 ## Development workflow
 
@@ -30,7 +30,7 @@ Make small, coherent local commits after relevant checks pass. Before every comm
 
 Edit `src/db/schema.ts`, run `npm run db:generate`, review SQL, and commit the migration plus metadata. Apply it to a local PostgreSQL database with `npm run db:migrate`; verify both fresh application and reruns. Do not use schema push as a substitute for migrations or edit applied migrations.
 
-Every private operation must derive identity from a verified server session, scope reads and mutations to that identity, and check ownership of related records. Never accept a caller-supplied user ID as authority. Add two-account isolation checks as training features arrive. Shared reference records are read-only to ordinary users. Never expose database configuration in client components.
+Every private operation must derive identity from a verified server session, scope reads and mutations to that identity, and check ownership of related records. Never accept a caller-supplied user ID as authority. Keep two-account isolation checks for goals, focus, logs, history and browser drafts. Shared reference records are read-only to ordinary users. Never expose database configuration in client components.
 
 Keep development seeding explicitly guarded, local, synthetic, and idempotent. Do not change existing development passwords or preferences silently. Do not introduce auth bypasses for testing.
 
@@ -42,7 +42,7 @@ Reference content stays English. Keep stable IDs and provenance; personal overla
 
 ## Current scope
 
-The first release aims at a small gi-oriented goal/session/review loop for independent users. AI coaching, skill scores, social features, gym management, a rich graph editor, and full offline synchronization are deferred. The foundation UI must not imply that later milestone features already work.
+The first release aims at a small gi-oriented goal/session/review loop for independent users. AI coaching, skill scores, social features, gym management, a rich graph editor, and full offline synchronization are deferred. Milestones 1 and 2 include foundation, goals, classes, ordinary account-specific local drafts and read-only history. Keep one editing tab per account as the documented MVP limit. Weekly reviews, saved edits/deletes, export/restore and expanded reference features remain deferred. The UI must not imply that later milestone features already work.
 
 ## Secrets and diagnostics
 

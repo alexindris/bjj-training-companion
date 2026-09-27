@@ -10,12 +10,12 @@ by Git.
 
 ## Measurement boundary
 
-The numerical report measures all authored TypeScript under `src/lib/`, all of
-`src/app/actions.ts`, and `scripts/seed-guard.ts`. That includes environment
+The numerical report measures all authored TypeScript under `src/lib/`, all server action modules matching
+`src/app/*actions.ts`, and `scripts/seed-guard.ts`. That includes environment
 validation, credential validation, auth configuration/profile creation hook,
 sign-in response/error handling and cookies, sign-out, verified session/profile
 queries, account-scoped preference writes, cookie security/lifetime settings,
-class merging, and protection of synthetic development credentials. Every
+training validation, ordinary local draft recovery/state transitions, owned training queries/transactions, class merging, and protection of synthetic development credentials. Every
 function, including anonymous validation callbacks, must map to coverage.
 
 Unit tests use real schemas and cookie parsing, while substituting the transport,
@@ -44,7 +44,10 @@ Thresholds apply **per measured file**: 90% statements, 90% lines, 90% branches,
 100% functions. Vitest includes unimported measured files, so unused application
 modules receive zero coverage. Missing files, missing/ambiguous functions, missing
 hit counters and unsupported mappings fail with a nonzero exit code. Coverage
-ignore directives in measured source also fail. These checks complement assertions;
+ignore directives in measured source also fail. Training text/year refinements use
+named validation functions: the pinned V8 remapper includes callback argument
+separators in some inline refinement end columns, which the exact mapping gate
+correctly rejects. No approximate mapping or exemption is accepted. These checks complement assertions;
 100% execution does not establish correct behavior.
 
 ## Complexity and per-function coverage
