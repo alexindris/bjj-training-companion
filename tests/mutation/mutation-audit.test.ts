@@ -34,7 +34,9 @@ function fixture(): MutationReport {
 
 describe("mutation evidence gate", () => {
   test("accepts killed evidence for all targets; rejects empty, missing, or stale evidence", () => {
-    expect(auditMutationReport(fixture(), [])).toEqual({ Killed: 4 });
+    expect(auditMutationReport(fixture(), [])).toEqual({
+      Killed: config.mutate.length,
+    });
     expect(() => auditMutationReport({ files: {} }, [])).toThrow(/empty/);
     const missing = fixture();
     delete missing.files["src/app/actions.ts"];
@@ -68,7 +70,7 @@ describe("mutation evidence gate", () => {
         "Synthetic audit fixture; production allowlist is separately reviewed.",
     };
     expect(auditMutationReport(report, [equivalent])).toEqual({
-      Killed: 3,
+      Killed: config.mutate.length - 1,
       Survived: 1,
     });
     for (const change of [

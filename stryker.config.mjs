@@ -2,6 +2,9 @@
 const config = {
   mutate: [
     "src/app/actions.ts",
+    "src/app/training-actions.ts",
+    "src/lib/training-validation.ts",
+    "src/lib/training-store.ts",
     "src/lib/env.ts",
     "src/lib/session.ts",
     "scripts/seed-guard.ts",

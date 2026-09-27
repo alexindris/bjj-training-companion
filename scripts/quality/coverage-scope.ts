@@ -6,7 +6,7 @@ import path from "node:path";
 // New policy modules cannot disappear from coverage through a broad exclude glob.
 export const coverageIncludes = [
   "src/lib/**/*.ts",
-  "src/app/actions.ts",
+  "src/app/*actions.ts",
   "scripts/seed-guard.ts",
 ];
 
@@ -42,7 +42,8 @@ export async function measuredSourceFiles(root: string): Promise<string[]> {
     )
     .sort();
   const measured = sources.filter(
-    (file) => file.startsWith("src/lib/") || file === "src/app/actions.ts",
+    (file) =>
+      file.startsWith("src/lib/") || /^src\/app\/[^/]*actions\.ts$/.test(file),
   );
   for (const file of sources) {
     if (!measured.includes(file) && !browserVerifiedSources[file]) {
