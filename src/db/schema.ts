@@ -5,6 +5,11 @@ import {
   timestamp,
   boolean,
   check,
+  date,
+  integer,
+  uuid,
+  unique,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -99,6 +104,7 @@ export const profiles = pgTable(
     locale: text("locale").notNull().default("en"),
     timezone: text("timezone").notNull().default("UTC"),
     trainingMode: text("training_mode").notNull().default("gi"),
+    activeGoalId: text("active_goal_id"),
   },
   (table) => [
     check("profiles_locale_check", sql`${table.locale} in ('en', 'es')`),
@@ -106,6 +112,11 @@ export const profiles = pgTable(
       "profiles_training_mode_check",
       sql`${table.trainingMode} in ('gi', 'no-gi')`,
     ),
+    foreignKey({
+      columns: [table.userId, table.activeGoalId],
+      foreignColumns: [goals.userId, goals.id],
+      name: "profiles_owned_active_goal_fk",
+    }),
   ],
 );
 
@@ -116,3 +127,128 @@ export const referencePositions = pgTable("reference_positions", {
   description: text("description").notNull(),
   provenance: text("provenance").notNull(),
 });
+
+export const goals = pgTable(
+  "goals",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("goals_owner_id_unique").on(table.userId, table.id),
+    index("goals_owner_created_idx").on(
+      table.userId,
+      table.createdAt,
+      table.id,
+    ),
+    check(
+      "goals_title_check",
+      sql`${table.title} ~ '[^[:space:]]' and length(${table.title}) <= 200`,
+    ),
+    check(
+      "goals_notes_check",
+      sql`${table.notes} is null or length(${table.notes}) <= 5000`,
+    ),
+  ],
+);
+
+export const trainingSessions = pgTable(
+  "training_sessions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    submissionId: uuid("submission_id").notNull(),
+    date: date("training_date", { mode: "string" }).notNull(),
+    mode: text("training_mode").notNull(),
+    technique: text("class_technique").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("training_sessions_owner_id_unique").on(table.userId, table.id),
+    unique("training_sessions_submission_unique").on(
+      table.userId,
+      table.submissionId,
+    ),
+    index("training_sessions_history_idx").on(
+      table.userId,
+      table.date.desc(),
+      table.createdAt.desc(),
+      table.id.desc(),
+    ),
+    check(
+      "training_sessions_mode_check",
+      sql`${table.mode} in ('gi', 'no-gi')`,
+    ),
+    check(
+      "training_sessions_technique_check",
+      sql`${table.technique} ~ '[^[:space:]]' and length(${table.technique}) <= 2000`,
+    ),
+    check(
+      "training_sessions_date_check",
+      sql`${table.date} between '0001-01-01'::date and '9999-12-31'::date`,
+    ),
+  ],
+);
+
+export const goalObservations = pgTable(
+  "goal_observations",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    classId: text("class_id").notNull(),
+    goalId: text("goal_id").notNull(),
+    outcome: text("outcome").notNull(),
+    opportunities: integer("opportunities"),
+    attempts: integer("attempts"),
+    successes: integer("successes"),
+    obstacle: text("obstacle"),
+    nextCue: text("next_cue"),
+  },
+  (table) => [
+    unique("goal_observations_class_unique").on(table.classId),
+    index("goal_observations_owner_goal_idx").on(table.userId, table.goalId),
+    foreignKey({
+      columns: [table.userId, table.classId],
+      foreignColumns: [trainingSessions.userId, trainingSessions.id],
+      name: "goal_observations_owned_class_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.userId, table.goalId],
+      foreignColumns: [goals.userId, goals.id],
+      name: "goal_observations_owned_goal_fk",
+    }),
+    check(
+      "goal_observations_outcome_check",
+      sql`${table.outcome} in ('no_opportunity', 'tried', 'worked_on_something_else')`,
+    ),
+    check(
+      "goal_observations_counts_check",
+      sql`(${table.opportunities} is null or ${table.opportunities} between 0 and 9999) and (${table.attempts} is null or ${table.attempts} between 0 and 9999) and (${table.successes} is null or ${table.successes} between 0 and 9999)`,
+    ),
+    check(
+      "goal_observations_counts_outcome_check",
+      sql`${table.outcome} = 'tried' or (${table.opportunities} is null and ${table.attempts} is null and ${table.successes} is null)`,
+    ),
+    check(
+      "goal_observations_counts_order_check",
+      sql`(${table.attempts} is null or ${table.opportunities} is null or ${table.attempts} <= ${table.opportunities}) and (${table.successes} is null or ${table.attempts} is null or ${table.successes} <= ${table.attempts}) and (${table.successes} is null or ${table.opportunities} is null or ${table.successes} <= ${table.opportunities})`,
+    ),
+    check(
+      "goal_observations_text_check",
+      sql`(${table.obstacle} is null or length(${table.obstacle}) <= 5000) and (${table.nextCue} is null or length(${table.nextCue}) <= 5000)`,
+    ),
+  ],
+);
