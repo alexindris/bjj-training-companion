@@ -144,6 +144,9 @@ describe("owned goals and active focus", () => {
     });
     expect(boundary.update).toHaveBeenCalledWith(profiles);
     expect(boundary.set).toHaveBeenCalledWith({ activeGoalId: "owned" });
+    expect(boundary.returning).toHaveBeenCalledExactlyOnceWith({
+      userId: profiles.userId,
+    });
   });
   it("denies missing/foreign goals without changing focus", async () => {
     expect(await selectOwnedGoal("verified-owner", "foreign")).toBe(false);
@@ -156,6 +159,9 @@ describe("owned goals and active focus", () => {
     expect(boundary.select).not.toHaveBeenCalled();
     expect(boundary.set).toHaveBeenCalledWith({ activeGoalId: null });
     expect(filter().params).toEqual(["verified-owner"]);
+    expect(boundary.returning).toHaveBeenCalledExactlyOnceWith({
+      userId: profiles.userId,
+    });
     expect(await selectOwnedGoal("missing-owner", null)).toBe(false);
   });
 });
