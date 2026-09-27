@@ -2,9 +2,10 @@ import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ArrowRight, Sprout, ShieldCheck } from "lucide-react";
-import { getOwnProfile, getSession } from "@/lib/session";
+import { getTrainingContext } from "@/lib/training-queries";
+import { FocusButton } from "@/components/goals-panel";
 import { routing } from "@/i18n/routing";
-import { Link, redirect } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 
@@ -15,9 +16,7 @@ export default async function Today({
 }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  const session = await getSession();
-  if (!session) return redirect({ href: "/sign-in", locale });
-  const profile = await getOwnProfile(session.user.id);
+  const { session, profile, activeGoal } = await getTrainingContext(locale);
   const t = await getTranslations("Today");
   return (
     <AppShell current="today" name={session.user.name}>
@@ -40,13 +39,21 @@ export default async function Today({
             strokeWidth={1.5}
             aria-hidden="true"
           />
-          <h2 className="display max-w-sm text-3xl">{t("focusTitle")}</h2>
-          <p className="mt-4 max-w-md text-sm leading-6 text-stone-600">
-            {t("focusDescription")}
+          <h2 className="display max-w-sm text-3xl break-words whitespace-pre-wrap">
+            {activeGoal?.title ?? t("focusTitle")}
+          </h2>
+          <p className="mt-4 max-w-md text-sm leading-6 break-words whitespace-pre-wrap text-stone-600">
+            {activeGoal ? activeGoal.notes : t("focusDescription")}
           </p>
-          <p className="mt-7 text-xs font-semibold text-teal-800">
-            {t("nextMilestone")}
-          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href="/log">{t("logClass")}</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/goals">{t("chooseFocus")}</Link>
+            </Button>
+            {activeGoal && <FocusButton goalId={null} clear />}
+          </div>
         </section>
         <section className="rounded-2xl border border-stone-200 bg-white p-7 sm:p-9">
           <ShieldCheck size={25} className="text-teal-800" aria-hidden="true" />

@@ -1,5 +1,12 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import { Compass, BookOpen, LogOut } from "lucide-react";
+import {
+  Compass,
+  BookOpen,
+  LogOut,
+  Target,
+  PlusCircle,
+  History,
+} from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Brand } from "./brand";
 import { LanguageSwitcher } from "./language-switcher";
@@ -13,7 +20,7 @@ export async function AppShell({
   name,
 }: {
   children: React.ReactNode;
-  current: "today" | "library";
+  current: "today" | "goals" | "log" | "history" | "library";
   name: string;
 }) {
   const t = await getTranslations("App");
@@ -29,11 +36,14 @@ export async function AppShell({
         </div>
         <nav
           aria-label={t("name")}
-          className="flex gap-2 px-5 pb-5 lg:flex-col lg:pt-8"
+          className="grid grid-cols-3 gap-1 px-3 pb-4 sm:flex sm:flex-wrap sm:px-5 lg:flex-col lg:pt-8"
         >
           {(
             [
               { key: "today", href: "/", icon: Compass },
+              { key: "goals", href: "/goals", icon: Target },
+              { key: "log", href: "/log", icon: PlusCircle },
+              { key: "history", href: "/history", icon: History },
               { key: "library", href: "/library", icon: BookOpen },
             ] as const
           ).map(({ key, href, icon: Icon }) => (
@@ -41,7 +51,7 @@ export async function AppShell({
               key={key}
               href={href}
               aria-current={current === key ? "page" : undefined}
-              className={`flex min-h-11 items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${current === key ? "bg-[#eaf1eb] text-teal-900" : "text-stone-600 hover:bg-stone-100"}`}
+              className={`flex min-h-11 items-center gap-2 rounded-xl px-2 py-3 text-xs font-medium sm:px-4 sm:text-sm ${current === key ? "bg-[#eaf1eb] text-teal-900" : "text-stone-600 hover:bg-stone-100"}`}
             >
               <Icon size={18} aria-hidden="true" />
               {t(key)}

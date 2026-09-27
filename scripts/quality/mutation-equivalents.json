@@ -66,5 +66,141 @@
     "original": "\".\"",
     "replacement": "\"\"",
     "reason": "This schema is flat: every failing issue path contains exactly one top-level configuration key. Joining one key with a period or an empty separator produces the same public error. A nested schema would require reviewing this equivalence."
+  },
+  {
+    "file": "src/lib/training-store.ts",
+    "location": {
+      "end": {
+        "column": 31,
+        "line": 76
+      },
+      "start": {
+        "column": 15,
+        "line": 76
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ id: goals.id }",
+    "replacement": "{}",
+    "reason": "This owned-goal existence query consumes only the number of returned rows. With the same owner/ID predicates and limit, removing the selected id produces one empty object per matching row in PostgreSQL 17.9, rather than exposing a different identity or changing existence. A real Drizzle query against a disposable Testcontainer confirmed [{}] for the matching goal. No selected field is read here."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 32,
+        "line": 24
+      },
+      "start": {
+        "column": 8,
+        "line": 24
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ error: \"invalidPage\" }",
+    "replacement": "{}",
+    "reason": "Only the history-page check's error options are removed; its integer/range check and limits remain. Pinned Zod then falls back to the owning number schema's identical invalidPage error. Valid values, rejection, issue paths/codes/limits and public messages are unchanged. Exact variants were compared against the current schemas across 41 valid and invalid page, count and date observations."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 35,
+        "line": 25
+      },
+      "start": {
+        "column": 11,
+        "line": 25
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ error: \"invalidPage\" }",
+    "replacement": "{}",
+    "reason": "Only the history-page check's error options are removed; its integer/range check and limits remain. Pinned Zod then falls back to the owning number schema's identical invalidPage error. Valid values, rejection, issue paths/codes/limits and public messages are unchanged. Exact variants were compared against the current schemas across 41 valid and invalid page, count and date observations."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 60,
+        "line": 26
+      },
+      "start": {
+        "column": 36,
+        "line": 26
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ error: \"invalidPage\" }",
+    "replacement": "{}",
+    "reason": "Only the history-page check's error options are removed; its integer/range check and limits remain. Pinned Zod then falls back to the owning number schema's identical invalidPage error. Valid values, rejection, issue paths/codes/limits and public messages are unchanged. Exact variants were compared against the current schemas across 41 valid and invalid page, count and date observations."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 35,
+        "line": 66
+      },
+      "start": {
+        "column": 10,
+        "line": 66
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ error: \"invalidCount\" }",
+    "replacement": "{}",
+    "reason": "Only the count check's error options are removed; its integer/range check and limits remain. Pinned Zod then falls back to the owning number schema's identical invalidCount error. Valid values, rejection, issue paths/codes/limits and public messages are unchanged. Exact variants were compared against the current schemas across 41 valid and invalid page, count and date observations."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 38,
+        "line": 67
+      },
+      "start": {
+        "column": 13,
+        "line": 67
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ error: \"invalidCount\" }",
+    "replacement": "{}",
+    "reason": "Only the count check's error options are removed; its integer/range check and limits remain. Pinned Zod then falls back to the owning number schema's identical invalidCount error. Valid values, rejection, issue paths/codes/limits and public messages are unchanged. Exact variants were compared against the current schemas across 41 valid and invalid page, count and date observations."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 57,
+        "line": 68
+      },
+      "start": {
+        "column": 32,
+        "line": 68
+      }
+    },
+    "mutator": "ObjectLiteral",
+    "original": "{ error: \"invalidCount\" }",
+    "replacement": "{}",
+    "reason": "Only the count check's error options are removed; its integer/range check and limits remain. Pinned Zod then falls back to the owning number schema's identical invalidCount error. Valid values, rejection, issue paths/codes/limits and public messages are unchanged. Exact variants were compared against the current schemas across 41 valid and invalid page, count and date observations."
+  },
+  {
+    "file": "src/lib/training-validation.ts",
+    "location": {
+      "end": {
+        "column": 45,
+        "line": 79
+      },
+      "start": {
+        "column": 32,
+        "line": 79
+      }
+    },
+    "mutator": "StringLiteral",
+    "original": "\"invalidDate\"",
+    "replacement": "\"\"",
+    "reason": "The year refinement still rejects 0000; only its message becomes empty. Pinned Zod treats an empty issue message as absent and falls back to the owning date schema error, invalidDate. Acceptance and complete issues, including the public invalidDate message, match the original for the invalid year and other date cases."
   }
 ]

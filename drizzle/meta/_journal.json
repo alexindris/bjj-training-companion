@@ -8,6 +8,13 @@
       "when": 1790451583620,
       "tag": "0000_clumsy_nova",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790471006871,
+      "tag": "0001_great_thena",
+      "breakpoints": true
     }
   ]
 }

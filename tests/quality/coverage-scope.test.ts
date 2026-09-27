@@ -15,6 +15,7 @@ async function scopeFixture() {
     ...Object.keys(browserVerifiedSources),
     "src/lib/policy.ts",
     "src/app/actions.ts",
+    "src/app/training-actions.ts",
     "scripts/seed-guard.ts",
   ]) {
     await mkdir(path.dirname(path.join(root, file)), { recursive: true });
@@ -28,6 +29,7 @@ test("every application source is measured or explicitly assigned a verification
   try {
     expect(await measuredSourceFiles(root)).toEqual([
       "src/app/actions.ts",
+      "src/app/training-actions.ts",
       "src/lib/policy.ts",
       "scripts/seed-guard.ts",
     ]);

@@ -8,10 +8,13 @@ the command runner, Vitest unit suite, and TypeScript checker. See the official
 and [configuration](https://stryker-mutator.io/docs/stryker-js/configuration/)
 documentation. Use the repository's documented Node version and `npm ci`.
 
-The selected first-milestone logic is:
+The selected foundation and training-loop logic is:
 
 - `src/app/actions.ts`: credential and language validation, response handling,
   authentication cookies, sign-out, and session-owned language updates.
+- `src/app/training-actions.ts`: verified goal/focus/class mutations and safe receipts/errors.
+- `src/lib/training-validation.ts`: training input limits, calendar dates, outcomes and nullable counts.
+- `src/lib/training-store.ts`: owned predicates, active-focus writes and atomic duplicate saves.
 - `src/lib/session.ts`: session retrieval and profile ownership filtering.
 - `src/lib/env.ts`: required PostgreSQL/auth configuration validation and
   value-free error messages.
@@ -130,3 +133,33 @@ freshness audit passed. The five mutation-audit regression tests also passed.
 This evidence covers the selected application boundaries, not all possible
 mutations or third-party implementations. The unsupported native Vitest runner
 path is replaced, not accepted as a passing limitation.
+
+## Milestone 2 survivor review
+
+The expanded run identified one meaningful test gap: deleting the focus-update
+`RETURNING` projection produces SQL rejected by PostgreSQL. The successful
+select/clear tests now require the account-ID return projection, which mocked
+rows previously concealed. Application behavior and quality gates are unchanged.
+
+Eight additional exact equivalents are recorded alongside the four foundation
+reviews:
+
+- Removing the integer/minimum/maximum error-option objects at training
+  validation lines 24–26 and 66–68 leaves those checks in place. The owning number
+  schema supplies the same `invalidPage` or `invalidCount` message under pinned
+  Zod's error precedence. Valid data, rejected data and complete issue objects
+  are unchanged.
+- Making the year-refinement message empty at line 79 still rejects year zero.
+  Pinned Zod falls back to the owning date schema's `invalidDate` message.
+- Removing the selected ID at training-store line 76 preserves the existence
+  check: its predicates and limit are unchanged, and only row count is consumed.
+  A real Drizzle query against disposable PostgreSQL 17.9 returned one empty
+  object for the matching row. No selected field is subsequently read.
+
+Each validation variant was compared with the current schema across 41
+valid/invalid page, count and date observations, including complete issue
+codes, paths, limits and messages. These reviews depend on the current parent
+schemas and query contract; changes to them require renewed review. They do not
+excuse meaningful survivors, alter raw scores or disable mutators. Final
+expanded-run counts and acceptance evidence are in
+[Milestone 2 local verification](milestone-2-verification.md).
