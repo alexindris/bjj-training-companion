@@ -3,6 +3,12 @@ const config = {
   mutate: [
     "src/app/actions.ts",
     "src/app/training-actions.ts",
+    "src/app/reference-actions.ts",
+    "src/lib/reference-validation.ts",
+    "src/lib/reference-fixtures.ts",
+    "src/lib/reference-store.ts",
+    "src/lib/reference-notes.ts",
+    "src/lib/reference-queries.ts",
     "src/lib/training-validation.ts",
     "src/lib/training-store.ts",
     "src/lib/env.ts",
