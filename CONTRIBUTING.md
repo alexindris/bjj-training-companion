@@ -30,7 +30,7 @@ Make small, coherent local commits after relevant checks pass. Before every comm
 
 Edit `src/db/schema.ts`, run `npm run db:generate`, review SQL, and commit the migration plus metadata. Apply it to a local PostgreSQL database with `npm run db:migrate`; verify both fresh application and reruns. Do not use schema push as a substitute for migrations or edit applied migrations.
 
-Every private operation must derive identity from a verified server session, scope reads and mutations to that identity, and check ownership of related records. Never accept a caller-supplied user ID as authority. Keep two-account isolation checks for goals, focus, logs, history and browser drafts. Shared reference records are read-only to ordinary users. Never expose database configuration in client components.
+Every private operation must derive identity from a verified server session, scope reads and mutations to that identity, and check ownership of related records. Never accept a caller-supplied user ID as authority. Keep two-account isolation checks for goals, focus, logs, history, browser drafts and reference notes. Shared reference records are read-only to ordinary users; only the current account can change its position/technique notes. Never expose database configuration in client components.
 
 Keep development seeding explicitly guarded, local, synthetic, and idempotent. Do not change existing development passwords or preferences silently. Do not introduce auth bypasses for testing.
 
@@ -38,11 +38,11 @@ Keep development seeding explicitly guarded, local, synthetic, and idempotent. D
 
 Add each UI key to both `messages/en.json` and `messages/es.json`. Translate validation, loading, error, empty-state, and accessibility text. Keep enum values stable. Preserve user-authored text exactly as entered.
 
-Reference content stays English. Keep stable IDs and provenance; personal overlays must remain separate from future upstream content. Do not bundle BJJGraph or other external datasets without reviewing the actual license and notices. Do not download or rehost instructional videos. Application licensing and content licensing are separate decisions.
+Reference content stays English. Keep stable IDs and provenance; private notes remain separate from shared content. Preserve reviewed video source/title, start time and provenance, and use ordinary safe links without embeds or thumbnails. Do not bundle BJJGraph or other external datasets without reviewing the actual license and notices. Do not download or rehost instructional videos. Application licensing and content licensing are separate decisions.
 
 ## Current scope
 
-The first release aims at a small gi-oriented goal/session/review loop for independent users. AI coaching, skill scores, social features, gym management, a rich graph editor, and full offline synchronization are deferred. Milestones 1 and 2 include foundation, goals, classes, ordinary account-specific local drafts and read-only history. Keep one editing tab per account as the documented MVP limit. Weekly reviews, saved edits/deletes, export/restore and expanded reference features remain deferred. The UI must not imply that later milestone features already work.
+The first release aims at a small gi-oriented goal/session/review loop for independent users. AI coaching, skill scores, social features, gym management, a rich graph editor, and full offline synchronization are deferred. Milestones 1–3 include foundation, goals, classes, ordinary account-specific local drafts, read-only history, and a small searchable reference Library with private notes. Keep one class-draft editing tab per account as the documented MVP limit. Weekly reviews, saved training edits/deletes, export/restore, goal-reference links and expanded reference features remain deferred. The UI must not imply that later milestone features already work.
 
 ## Secrets and diagnostics
 

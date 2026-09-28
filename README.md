@@ -2,7 +2,7 @@
 
 A mobile-first training companion for keeping a focus, reflecting after class, and reviewing progress over time. Built locally toward an open-source release, with ordinary PostgreSQL and authentication inside the application.
 
-**Milestones 1 and 2:** Next.js App Router and TypeScript, PostgreSQL in Docker Compose, committed Drizzle migrations, real Better Auth email/password sessions, two synthetic development users, and English/Spanish interface localization. The training loop adds owned goals, zero or one active goal, classes with optional goal observations, local draft recovery and read-only history. Weekly reviews and saved-record changes belong to later milestones.
+**Milestones 1–3:** Next.js App Router and TypeScript, PostgreSQL in Docker Compose, committed Drizzle migrations, real Better Auth email/password sessions, two synthetic development users, and English/Spanish interface localization. The training loop adds owned goals, zero or one active goal, classes with optional goal observations, local draft recovery and read-only history. Library adds searchable English positions and techniques, two attributed timestamped external video links, and one private note per account per reference. Weekly reviews and saved-record changes belong to later milestones.
 
 The source repository is public on GitHub. Application code licensing is **pending the maintainer’s choice**; `UNLICENSED` is intentional until then. Public visibility does not grant an open-source license. See [LICENSE.md](LICENSE.md).
 
@@ -31,6 +31,12 @@ Open [http://localhost:3000](http://localhost:3000). All commands run from the r
 Both accounts use your **`DEV_USER_PASSWORD` value in `.env`**. The development sign-in screen lists the emails; it never renders the password. Production builds hide this helper. Seed creation uses Better Auth and stores hashed passwords, not plaintext. Re-running the seed preserves existing passwords and language choices. Changing the environment password does not reset an existing account.
 
 English and Spanish routes use `/en` and `/es`. Language switching saves the signed-in user’s preference in PostgreSQL and a browser cookie. On subsequent sign-in, the saved account language takes precedence over the sign-in page language. Each account has an independent preference. Anonymous switching saves only the cookie. Reference titles and descriptions remain English, with English language attributes; user-authored goals, class technique and reflections are stored verbatim.
+
+## Reference Library
+
+Signed-in users can browse and search four original positions and four original technique summaries. Search matches a case-insensitive literal substring of English titles and descriptions; it does not search private notes or video metadata. Type and optional position filters narrow the result, with 20 results per page. Position and technique details show source provenance and their relationship. Two technique pages link to reviewed Chewjitsu videos at a useful start time in a new tab. Library renders no external player, thumbnail, or preview.
+
+Each account can save one plain-text reminder on each position or technique. Notes are private to that account and preserved exactly, up to 5,000 UTF-16 code units. Save is explicit; deletion requires confirmation. Unsaved note edits stay only in memory and are lost on navigation, refresh, sign-out, or language change. This does not alter class draft recovery. References remain shared and read-only to ordinary users; there is no goal-to-reference or class-to-reference link.
 
 ## Training loop
 
@@ -70,13 +76,13 @@ npm run db:migrate
 npm run db:seed
 ```
 
-Use migrations, not schema push. The initial schema contains Better Auth identity tables, owned profiles with constrained locale/training defaults, and a shared reference fixture table. Authentication sessions are named `auth_sessions`; class records are named `training_sessions`. The additive training migration creates goals and observations and adds a nullable owned active-goal pointer to profiles. It preserves existing accounts, preferences and reference fixtures. Code rollback must retain recorded training tables and data.
+Use migrations, not schema push. The initial schema contains Better Auth identity tables, owned profiles with constrained locale/training defaults, and a shared reference fixture table. Authentication sessions are named `auth_sessions`; class records are named `training_sessions`. The additive training migration creates goals and observations and adds a nullable owned active-goal pointer to profiles. The reference migration adds techniques, external links and account-owned notes without rewriting existing records. Code rollback must retain recorded training and note tables and data.
 
 `db:seed` refuses production environments and non-loopback database hosts. Never migrate or seed an unfamiliar database. No test training observations or real personal records are bundled. `db:studio` is optional and binds to loopback.
 
 ## Local quality checks
 
-The checks cover the foundation and milestone 2 training loop and run on your computer. Coverage and mutation measurement details are documented below.
+The checks cover foundation, the training loop and the reference Library and run on your computer. Coverage and mutation measurement details are documented below.
 
 ```sh
 # Once per machine:
@@ -133,7 +139,7 @@ The browser does not receive database credentials. Protected pages verify real s
 
 ## Content and dependencies
 
-The four English starter positions are original minimal fixtures with stable IDs and provenance. They are not a curriculum or a imported BJJGraph dataset. Techniques, video links, and external corpus imports are deferred to milestone 3. No videos or thumbnails are downloaded or rehosted. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The four English starter positions and four technique summaries are original minimal fixtures with stable IDs and provenance. They are not a curriculum or an imported BJJGraph dataset. Two reviewed Chewjitsu links identify external videos and timestamps; no video or thumbnail is downloaded or rehosted. External corpus imports require separate permission review. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Dependencies and the lockfile are pinned. The narrow `typed-rest-client`/`qs` override selects patched qs 6.16.0 for mutation tooling; review it when upgrading Stryker. The narrow esbuild override removes a vulnerable obsolete transitive version used by Drizzle Kit’s TypeScript loader; migration generation and application must be checked when changing it. Integrations follow the official [Better Auth Next.js guide](https://better-auth.com/docs/integrations/next), [Drizzle adapter guide](https://better-auth.com/docs/adapters/drizzle), and [next-intl routing guide](https://next-intl.dev/docs/routing/setup).
 
@@ -141,7 +147,7 @@ Dependencies and the lockfile are pinned. The narrow `typed-rest-client`/`qs` ov
 
 1. **Foundation (implemented):** reproducible setup, database, authentication, two users, language switching.
 2. **Training loop (implemented):** create/activate goals, log class technique and observations, recover drafts, inspect history.
-3. **Reference links:** curate the English corpus, search, techniques, video timestamps, and private notes.
+3. **Reference links (implemented):** small original English corpus, search, techniques, reviewed video timestamps, and private notes.
 4. **Review and durability:** weekly review, goal history, edits, export, and full cross-user isolation tests.
 5. **Local acceptance:** phone-oriented review, production-build check, export/restore verification.
 6. **Open-source release:** choose code/content licenses; application hosting and deployment require separate approval.

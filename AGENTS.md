@@ -1,6 +1,6 @@
 # Project boundaries
 
-Use the milestone boundaries in `README.md` for scope. This checkout implements milestones 1 and 2: foundation, owned goals, class logging, basic account-specific local draft recovery and read-only history. Weekly review, saved edits/deletes, export/restore and expanded references belong to later work. Keep Spanish/English localization limited to the UI, reference fixtures in English, and personal records scoped to verified sessions.
+Use the milestone boundaries in `README.md` for scope. This checkout implements milestones 1–3: foundation, owned goals, class logging, basic account-specific local draft recovery, read-only history, and a small searchable reference Library with timestamped external links and account-owned notes. Weekly review, saved training edits/deletes, export/restore, goal-reference linking and expanded corpus tools belong to later work. Keep Spanish/English localization limited to the UI, reference fixtures in English, and personal records scoped to verified sessions.
 
 Run locally. Do not provision cloud services, add hosted previews, publish the repository, or deploy without the maintainer's explicit authorization. The code license remains undecided. Use synthetic fixtures and keep secrets out of Git.
 
