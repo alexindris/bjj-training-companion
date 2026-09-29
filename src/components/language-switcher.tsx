@@ -35,7 +35,9 @@ export function LanguageSwitcher() {
                 setFailed(true);
                 return;
               }
-              router.replace(pathname, { locale: next });
+              router.replace(`${pathname}${window.location.search}`, {
+                locale: next,
+              });
               router.refresh();
             });
           }}

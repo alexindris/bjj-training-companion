@@ -8,7 +8,7 @@ the command runner, Vitest unit suite, and TypeScript checker. See the official
 and [configuration](https://stryker-mutator.io/docs/stryker-js/configuration/)
 documentation. Use the repository's documented Node version and `npm ci`.
 
-The selected foundation and training-loop logic is:
+The selected foundation, training-loop, and reference logic is:
 
 - `src/app/actions.ts`: credential and language validation, response handling,
   authentication cookies, sign-out, and session-owned language updates.
@@ -16,6 +16,16 @@ The selected foundation and training-loop logic is:
 - `src/lib/training-validation.ts`: training input limits, calendar dates, outcomes and nullable counts.
 - `src/lib/training-store.ts`: owned predicates, active-focus writes and atomic duplicate saves.
 - `src/lib/session.ts`: session retrieval and profile ownership filtering.
+- `src/app/reference-actions.ts`: verified-session note save/delete, validation,
+  safe errors, and detail revalidation.
+- `src/lib/reference-validation.ts`: bounded search and note input, strict
+  target selection, safe video URLs and timestamps.
+- `src/lib/reference-fixtures.ts`: original technique and reviewed-link fixture
+  validation before seeding.
+- `src/lib/reference-store.ts`: bounded literal search, detail relationships,
+  ordering, and shared-target checks.
+- `src/lib/reference-notes.ts`: owner-scoped note reads and writes.
+- `src/lib/reference-queries.ts`: protected page context and note selection.
 - `src/lib/env.ts`: required PostgreSQL/auth configuration validation and
   value-free error messages.
 - `scripts/seed-guard.ts`: the local synthetic-account seeding boundary.
@@ -163,3 +173,20 @@ schemas and query contract; changes to them require renewed review. They do not
 excuse meaningful survivors, alter raw scores or disable mutators. Final
 expanded-run counts and acceptance evidence are in
 [Milestone 2 local verification](milestone-2-verification.md).
+
+## Milestone 3 reference review
+
+The reference expansion retains every previous target, the two explicit
+ownership/session probes, the 90% raw gate, and exact-equivalence auditing.
+Focused tests cover URL and timestamp boundaries, literal search and stable
+pagination, account-scoped note persistence, safe action results, and missing
+reference behavior. The separate PostgreSQL and production-browser suites
+check the actual database and authenticated request boundaries.
+
+On 2026-09-28, the stable Node 24.18.0 run evaluated **1,015 candidates**:
+**684 killed, 319 type-invalid, 12 existing reviewed equivalents, no uncovered
+mutants or timeouts**. Raw score was **98.28%**. Every new reference target had
+100% of valid mutants killed; none required a new equivalence review. Both
+explicit probes failed two assertions under their injected owner-removal and
+forged-session mutations. Report/source freshness and the exact-survivor audit
+passed. The 12 prior equivalence records remain unchanged.

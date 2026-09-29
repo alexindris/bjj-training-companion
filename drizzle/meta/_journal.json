@@ -15,6 +15,13 @@
       "when": 1790471006871,
       "tag": "0001_great_thena",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790614263742,
+      "tag": "0002_burly_darkstar",
+      "breakpoints": true
     }
   ]
 }

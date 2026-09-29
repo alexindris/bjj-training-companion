@@ -120,13 +120,110 @@ export const profiles = pgTable(
   ],
 );
 
-// Shared original English fixtures. Third-party imports are a later milestone.
+// Shared original English fixtures. No third-party corpus is imported.
 export const referencePositions = pgTable("reference_positions", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description").notNull(),
   provenance: text("provenance").notNull(),
 });
+
+export const referenceTechniques = pgTable(
+  "reference_techniques",
+  {
+    id: text("id").primaryKey(),
+    positionId: text("position_id")
+      .notNull()
+      .references(() => referencePositions.id, { onDelete: "restrict" }),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    provenance: text("provenance").notNull(),
+  },
+  (table) => [
+    index("reference_techniques_position_id_idx").on(
+      table.positionId,
+      table.id,
+    ),
+    check(
+      "reference_techniques_content_check",
+      sql`${table.title} ~ '[^[:space:]]' and length(${table.title}) <= 200 and ${table.description} ~ '[^[:space:]]' and length(${table.description}) <= 2000 and ${table.provenance} ~ '[^[:space:]]' and length(${table.provenance}) <= 1000`,
+    ),
+  ],
+);
+
+export const referenceVideos = pgTable(
+  "reference_videos",
+  {
+    id: text("id").primaryKey(),
+    techniqueId: text("technique_id")
+      .notNull()
+      .references(() => referenceTechniques.id, { onDelete: "restrict" }),
+    url: text("url").notNull(),
+    label: text("label").notNull(),
+    sourceName: text("source_name").notNull(),
+    sourceTitle: text("source_title").notNull(),
+    startSeconds: integer("start_seconds").notNull(),
+    momentLabel: text("moment_label").notNull(),
+    provenance: text("provenance").notNull(),
+    reviewedOn: date("reviewed_on", { mode: "string" }).notNull(),
+  },
+  (table) => [
+    index("reference_videos_technique_id_idx").on(table.techniqueId, table.id),
+    check(
+      "reference_videos_content_check",
+      sql`${table.url} ~ '[^[:space:]]' and length(${table.url}) <= 2048 and ${table.label} ~ '[^[:space:]]' and length(${table.label}) <= 200 and ${table.sourceName} ~ '[^[:space:]]' and length(${table.sourceName}) <= 200 and ${table.sourceTitle} ~ '[^[:space:]]' and length(${table.sourceTitle}) <= 200 and ${table.momentLabel} ~ '[^[:space:]]' and length(${table.momentLabel}) <= 200 and ${table.provenance} ~ '[^[:space:]]' and length(${table.provenance}) <= 1000`,
+    ),
+    check(
+      "reference_videos_start_check",
+      sql`${table.startSeconds} between 0 and 21600`,
+    ),
+    check(
+      "reference_videos_date_check",
+      sql`${table.reviewedOn} between '0001-01-01'::date and '9999-12-31'::date`,
+    ),
+  ],
+);
+
+export const referenceNotes = pgTable(
+  "reference_notes",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    positionId: text("position_id").references(() => referencePositions.id, {
+      onDelete: "restrict",
+    }),
+    techniqueId: text("technique_id").references(() => referenceTechniques.id, {
+      onDelete: "restrict",
+    }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("reference_notes_owner_position_unique").on(
+      table.userId,
+      table.positionId,
+    ),
+    unique("reference_notes_owner_technique_unique").on(
+      table.userId,
+      table.techniqueId,
+    ),
+    check(
+      "reference_notes_target_xor_check",
+      sql`(${table.positionId} is not null) <> (${table.techniqueId} is not null)`,
+    ),
+    check(
+      "reference_notes_body_check",
+      sql`${table.body} ~ '[^[:space:]]' and length(${table.body}) <= 5000`,
+    ),
+  ],
+);
 
 export const goals = pgTable(
   "goals",

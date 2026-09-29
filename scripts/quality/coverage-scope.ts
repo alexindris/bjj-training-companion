@@ -14,6 +14,10 @@ export const browserVerifiedSources: Record<string, string> = {
   "src/app/[locale]/error.tsx": "Next error boundary presentation",
   "src/app/[locale]/layout.tsx": "Next locale layout and provider wiring",
   "src/app/[locale]/library/page.tsx": "Protected reference library page",
+  "src/app/[locale]/library/[kind]/[id]/page.tsx":
+    "Verified reference detail, owner note and safe external links: browser journeys",
+  "src/app/[locale]/library/[kind]/[id]/not-found.tsx":
+    "Localized missing reference presentation: browser missing/invalid routes",
   "src/app/[locale]/goals/page.tsx":
     "Verified context and owned goals rendering: browser journeys",
   "src/app/[locale]/log/page.tsx":
@@ -40,6 +44,12 @@ export const browserVerifiedSources: Record<string, string> = {
     "Localized field/action error presentation: browser",
   "src/components/brand.tsx": "Presentational brand",
   "src/components/language-switcher.tsx": "Locale action and navigation UI",
+  "src/components/reference-detail.tsx":
+    "Shared detail and safe link presentation: browser and measured URL policy",
+  "src/components/reference-list.tsx":
+    "Bounded search and contextual pagination presentation: browser and measured search policy",
+  "src/components/reference-note-editor.tsx":
+    "Account-keyed note editor presentation: browser Save, Cancel, Delete and recovery checks",
   "src/components/sign-in-form.tsx": "Progressively enhanced sign-in UI",
   "src/components/ui/button.tsx": "Radix/Tailwind button presentation",
   "src/db/index.ts": "PostgreSQL connection wiring: real integration suite",
